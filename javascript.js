@@ -6,7 +6,66 @@ const winningScore = 3;
 let computerScore = 0;
 let playerScore = 0;
 
-playGame();
+let menu = document.querySelector("#choice-menu");
+let playerScoreDiv = document.querySelector("#player-score");
+let computerScoreDiv = document.querySelector("#computer-score");
+let winnerMessageContainer = document.querySelector("#winner-message-container");
+let newGameButton = document.querySelector("#new-game");
+
+menu.addEventListener("click", (event) => {
+    console.log("You reached the click event");
+    let target = event.target;
+
+    switch (target.id) {
+        case "rock": 
+            playRound(choices[0], getComputerChoice());
+            break;
+        case "paper": 
+            playRound(choices[1], getComputerChoice());
+            break;
+        case "scissors":
+            playRound(choices[2], getComputerChoice());    
+            break;
+        default:
+            alert("an invalid option was selected. Try again. ")
+            break;
+    }
+
+    changeScoreDivs();
+    winnerCheck();
+});
+
+function changeScoreDivs() {
+    playerScoreDiv.textContent = playerScore;
+    computerScoreDiv.textContent = computerScore;
+}
+
+function winnerCheck() {
+    if (playerScore >= winningScore && playerScore > computerScore) {
+        winnerMessageContainer.textContent = `You were the first to reach ${winningScore} points and are the winner!`;
+        
+        menu.style.display = "none"; //Remove the choice buttons since the game has been won and is over. 
+        newGameButton.style.display = "initial";
+
+    } else if (computerScore >= winningScore && computerScore >playerScore) {
+        winnerMessageContainer.textContent = `The computer was the first to reach ${winningScore} points and is the winner!`;
+        
+        menu.style.display = "none";menu.style.display = "none"; //Remove the choice buttons since the game has been won and is over. 
+        newGameButton.style.display = "initial";
+    }
+
+    return;
+}
+
+//When player decides to play again, reset the scores and show choices again. 
+newGameButton.addEventListener("click", () => {
+    playerScore = 0;
+    computerScore = 0;
+    changeScoreDivs();
+    winnerMessageContainer.textContent = "";
+    menu.style.display = "initial";
+    newGameButton.style.display = "none";
+});
 
 function playGame() {
     
@@ -45,7 +104,7 @@ function playRound(playerChoice, computerChoice) {
 
 // 
 function getComputerChoice() {
-    const max = 3;
+    const max = choices.length;
     return choices[Math.floor(Math.random()*max)];
 }
 
